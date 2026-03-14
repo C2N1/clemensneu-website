@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clemens Neureiter</title>
+    <style>
+        @font-face {
+            font-family: 'MonumentGrotesk Mono';
+            src: url('Fonts/MonumentGrotesk-Semi-Mono.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'MonumentGrotesk Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            padding: 20px 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .header-left h1 {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 2px;
+        }
+
+        .header-left h2 {
+            font-size: 14px;
+            font-weight: 300;
+            color: #666;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .header-right nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-right a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 300;
+            transition: opacity 0.2s;
+        }
+
+        .header-right a:hover {
+            opacity: 0.5;
+        }
+
+        .clock {
+            font-size: 14px;
+            font-weight: 300;
+            color: #666;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            padding: 0 30px 60px;
+        }
+
+        /* Hero Slideshow */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 80px);
+            padding: 40px 0;
+        }
+
+        .slideshow {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+        }
+
+        .slideshow img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .slideshow img.active {
+            opacity: 1;
+        }
+
+        .slideshow {
+            cursor: pointer;
+        }
+
+        /* Project Grid */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .project-item {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-item a {
+            display: block;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .project-image {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: #f5f5f5;
+            overflow: hidden;
+            margin-bottom: 10px;
+            transition: opacity 0.3s;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-item:hover .project-image {
+            opacity: 0.7;
+        }
+
+        .project-title {
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        /* About Section */
+        .about-section {
+            max-width: 800px;
+            margin: 60px 0;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .about-section h3 {
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .about-text {
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            max-width: 800px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .contact-section h3 {
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .contact-info {
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 2;
+        }
+
+        .contact-info a {
+            color: var(--text);
+            text-decoration: none;
+            border-bottom: 1px solid var(--text);
+            transition: opacity 0.2s;
+        }
+
+        .contact-info a:hover {
+            opacity: 0.5;
+        }
+
+        /* Services List */
+        .services-list {
+            list-style: none;
+            margin: 40px 0;
+        }
+
+        .services-list li {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .services-list li:first-child {
+            border-top: 1px solid var(--border);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 30px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 300;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header-left h1 {
+                font-size: 16px;
+            }
+
+            .header-left h2 {
+                font-size: 12px;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            main {
+                padding: 0 20px 40px;
+                margin-top: 110px;
+            }
+
+            .hero {
+                min-height: auto;
+                padding: 20px 0;
+            }
+
+            .slideshow {
+                height: 40vh;
+            }
+
+            .about-section {
+                margin: 30px 0;
+                padding: 30px 0;
+            }
+
+            .about-text {
+                font-size: 13px;
+            }
+
+            .services-list li {
+                padding: 15px 0;
+                font-size: 13px;
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .clock {
+                display: none;
+            }
+
+            footer {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Placeholder styles for demo */
+        .placeholder-text {
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="header-left">
+                <h1>Clemens Neureiter</h1>
+                <h2>Industrial Design & Product Development</h2>
+            </div>
+            <div class="header-right">
+                <span style="font-size:14px;font-weight:300;">Work in progress</span>
+                <div class="clock" id="clock">00:00:00</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Slideshow -->
+        <section class="hero">
+            <div class="slideshow" id="slideshow">
+                <img src="Bilder/0.gif" alt="Clemens Neureiter" class="active">
+                <img src="Bilder/0.1.jpg" alt="Clemens Neureiter">
+                <img src="Bilder/1.jpg" alt="Clemens Neureiter">
+                <img src="Bilder/2.jpg" alt="Clemens Neureiter">
+                <img src="Bilder/2.2.JPG" alt="Clemens Neureiter">
+                <img src="Bilder/3.jpg" alt="Clemens Neureiter">
+                <img src="Bilder/4.jpg" alt="Clemens Neureiter">
+                <img src="Bilder/6.JPG" alt="Clemens Neureiter">
+                <img src="Bilder/7.jpg" alt="Clemens Neureiter">
+                <img src="Bilder/15.jpg" alt="Clemens Neureiter">
+                <img src="Bilder/33.jpg" alt="Clemens Neureiter">
+                <img src="Bilder/lighttest4.jpg" alt="Clemens Neureiter">
+                <img src="Bilder/MindFactory.jpg" alt="Clemens Neureiter">
+                <img src="Bilder/scene basic2.jpg" alt="Clemens Neureiter">
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-section">
+            <h3>About</h3>
+            <p class="about-text">
+                Industrial designer and product developer working at the intersection of design, engineering and craft. With a background in boatbuilding and carpentry, studied at UFG Linz, ECAL Lausanne and HKDI Hong Kong.
+            </p>
+            <p class="about-text">
+                I guide products holistically – from initial idea through construction and prototyping to production readiness. Combining design ambition with a deep understanding of materials, manufacturing and digital tools.
+            </p>
+            <p class="about-text">
+                Interdisciplinary, pragmatic and solution-oriented – whether collaborating with companies, engineers or working hands-on at the prototype in the workshop.
+            </p>
+
+            <h3 style="margin-top: 40px;">Services</h3>
+            <ul class="services-list">
+                <li>Industrial Design & Product Design</li>
+                <li>Construction & Prototyping</li>
+                <li>CAD/CAM & Digital Manufacturing</li>
+                <li>Product Development & Production Support</li>
+                <li>Consulting & Concept Development</li>
+            </ul>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact-section">
+            <h3>Contact</h3>
+            <div class="contact-info">
+                <p>
+                    E-Mail: <a href="mailto:deine@email.com">deine@email.com</a><br>
+                    Telefon: <a href="tel:+41000000000">+41 00 000 00 00</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Clemens Neureiter. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Clock function
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // Update clock every second
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call
+
+
+        // Slideshow
+        var slideIndex = 0;
+        var slides = document.querySelectorAll('#slideshow img');
+
+        document.getElementById('slideshow').addEventListener('click', function() {
+            slides[slideIndex].classList.remove('active');
+            slideIndex = (slideIndex + 1) % slides.length;
+            slides[slideIndex].classList.add('active');
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

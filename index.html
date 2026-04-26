@@ -1019,7 +1019,6 @@
     const p = PAPERS[i];
     document.documentElement.style.setProperty('--paper', p.hex);
     document.getElementById('paper-name').textContent = p.name;
-    document.getElementById('swatch').style.background = p.hex;
   }
   applyPaper(paperIdx);
   document.getElementById('paper-cycle').addEventListener('click', () => {

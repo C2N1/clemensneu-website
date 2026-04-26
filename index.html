@@ -1,448 +1,1447 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clemens Neureiter</title>
-    <style>
-        @font-face {
-            font-family: 'MonumentGrotesk Mono';
-            src: url('Fonts/MonumentGrotesk-Semi-Mono.ttf') format('truetype');
-            font-weight: 400;
-            font-style: normal;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clemens Neureiter — Industrial Design & Product Development</title>
+<meta name="description" content="Clemens Neureiter — Industrial designer and product developer based in Zurich. Design, engineering and craft across boats, furniture, medical devices and consumer goods.">
+<style>
+  /* ──────────────────────────────────────────────────────────
+     Paper swatches — same system as CV. A random one is picked
+     on load (see <script> below). Ink stays black for legibility.
+  ────────────────────────────────────────────────────────── */
+  :root {
+    --paper: #faf7f2;   /* cream — default; overridden by JS */
+    --ink:   #0e0e0c;
+    --ink-50: rgba(14,14,12,0.50);
+    --ink-30: rgba(14,14,12,0.30);
+    --ink-15: rgba(14,14,12,0.15);
+    --rule:  rgba(14,14,12,0.22);
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    /* Tweakable: frame language (radius, line weight, line style).
+       Defaults match original hand-drawn CV feel. */
+    --bdw: 1px;
+    --bds: dashed;
+    --bdr: 0px;
 
-        :root {
-            --bg: #ffffff;
-            --text: #000000;
-            --border: #e0e0e0;
-        }
+    /* Tweakable: image treatment — newsprint tint.
+       0 = full color, 1 = fully tinted toward paper. */
+    --img-tint: 0.55;
+    --img-sat: 0.35;
+    --img-contrast: 1.05;
+    --img-bright: 1;
+    --halftone-size: 5px;
+    --hair:  rgba(14,14,12,0.14);
+    --gutter: 40px;
+  }
 
-        body {
-            font-family: 'MonumentGrotesk Mono', monospace;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 14px;
-            line-height: 1.6;
-        }
+  @font-face {
+    font-family: 'Monument Grotesk Mono';
+    src: url('Fonts/MonumentGrotesk-Semi-Mono.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
 
-        /* Header */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg);
-            z-index: 100;
-            border-bottom: 1px solid var(--border);
-            padding: 20px 30px;
-        }
+  /* Reasonable fallbacks if the Monument files aren't served */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter Tight', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color .6s ease;
+  }
 
-        .header-left h1 {
-            font-size: 18px;
-            font-weight: 400;
-            margin-bottom: 2px;
-        }
+  ::selection { background: var(--ink); color: var(--paper); }
 
-        .header-left h2 {
-            font-size: 14px;
-            font-weight: 300;
-            color: #666;
-        }
+  .mono {
+    font-family: 'Monument Grotesk Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
 
-        .header-right {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
+  a { color: inherit; }
 
-        .header-right nav {
-            display: flex;
-            gap: 20px;
-        }
+  :focus-visible {
+    outline: 1.5px solid var(--ink);
+    outline-offset: 3px;
+  }
 
-        .header-right a {
-            color: var(--text);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 300;
-            transition: opacity 0.2s;
-        }
+  /* ──────────────────────────────────────────────────────────
+     Header — DOC / REV / SET / SHEET strip, exactly like the CV
+  ────────────────────────────────────────────────────────── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--paper);
+    padding: 18px var(--gutter) 14px;
+    border-bottom: 1px solid var(--hair);
+    transition: background-color .6s ease;
+  }
+  .topbar-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .field {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border: var(--bdw) var(--bds) var(--ink-30); border-radius: var(--bdr);
+    white-space: nowrap;
+  }
+  .field .k { color: var(--ink-50); }
+  .field .v { color: var(--ink); }
+  .field-btn {
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .field-btn .arrow { color: var(--ink-50); margin-left: 2px; transition: transform .3s ease; }
+  .field-btn:hover { background: var(--ink); color: var(--paper); border-style: solid; border-color: var(--ink); }
+  .field-btn:hover .k,
+  .field-btn:hover .arrow { color: var(--paper); opacity: .7; }
+  .field-btn:active .arrow { transform: rotate(120deg); }
+  .topbar nav {
+    display: flex;
+    gap: 6px;
+    justify-self: end;
+  }
+  .topbar nav a {
+    padding: 4px 10px;
+    border: var(--bdw) var(--bds) var(--ink-30); border-radius: var(--bdr);
+    text-decoration: none;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .topbar nav a:hover,
+  .topbar nav a.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    border-style: solid;
+  }
 
-        .header-right a:hover {
-            opacity: 0.5;
-        }
+  .topbar-dots {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ink); opacity: .4;
+  }
 
-        .clock {
-            font-size: 14px;
-            font-weight: 300;
-            color: #666;
-        }
+  /* ──────────────────────────────────────────────────────────
+     Hero — Name block in the CV's idiom
+  ────────────────────────────────────────────────────────── */
+  .hero {
+    padding: 64px var(--gutter) 40px;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 40px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .hero-name {
+    font-family: 'Inter Tight', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    font-size: clamp(56px, 9vw, 128px);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    padding: 8px 0;
+    text-wrap: balance;
+  }
+  .hero-tag {
+    margin-top: 12px;
+    padding: 8px 0;
+    font-style: italic;
+    font-size: clamp(18px, 2vw, 26px);
+    color: var(--ink);
+    font-weight: 400;
+  }
+  .meta-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-self: end;
+  }
+  .meta-card {
+    border: var(--bdw) var(--bds) var(--ink-30); border-radius: var(--bdr);
+    padding: 8px 10px 9px;
+    position: relative;
+  }
+  .meta-card .k {
+    display: block;
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-50);
+    margin-bottom: 4px;
+  }
+  .meta-card .v {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
 
-        /* Main Content */
-        main {
-            margin-top: 80px;
-            padding: 0 30px 60px;
-        }
+  /* ──────────────────────────────────────────────────────────
+     Section scaffold — A · WORK, B · ABOUT, C · SERVICES, D · CONTACT
+  ────────────────────────────────────────────────────────── */
+  section.block {
+    padding: 88px var(--gutter) 96px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .block-header {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 40px;
+    margin-bottom: 32px;
+    align-items: start;
+  }
+  .block-letter {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-50);
+    padding: 4px 0;
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .block-title {
+    font-family: 'Inter Tight', 'Helvetica Neue', sans-serif;
+    font-size: clamp(28px, 3.4vw, 44px);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .block-title em {
+    font-style: italic;
+    color: var(--ink-50);
+    font-weight: 400;
+  }
 
-        /* Hero Slideshow */
-        .hero {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: calc(100vh - 80px);
-            padding: 40px 0;
-        }
+  /* ──────────────────────────────────────────────────────────
+     Slideshow — now with metadata, progress, keyboard
+  ────────────────────────────────────────────────────────── */
+  .slideshow {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: var(--bdw) var(--bds) var(--ink-30); border-radius: var(--bdr);
+    background: color-mix(in oklab, var(--paper) 85%, var(--ink) 4%);
+    overflow: hidden;
+    user-select: none;
+    cursor: zoom-in;
+  }
+  .slideshow .expand-hint {
+    position: absolute; top: 12px; right: 12px;
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.06em;
+    background: var(--paper); color: var(--ink);
+    padding: 4px 8px; border-radius: var(--bdr);
+    border: var(--bdw) var(--bds) var(--ink-30);
+    z-index: 5; pointer-events: none;
+    opacity: 0.85;
+  }
+  /* Modal lightbox — clicking the slideshow opens it fullscreen. */
+  .slideshow-modal {
+    position: fixed; inset: 0;
+    background: color-mix(in oklab, var(--ink) 92%, var(--paper) 0%);
+    display: none;
+    z-index: 1000;
+    padding: 5vh 5vw;
+    box-sizing: border-box;
+    animation: ssOpen .35s ease;
+  }
+  .slideshow-modal.open { display: flex; flex-direction: column; }
+  @keyframes ssOpen {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .slideshow-modal .modal-stage {
+    flex: 1; position: relative; min-height: 0;
+    background: color-mix(in oklab, var(--paper) 95%, var(--ink) 5%);
+    border-radius: var(--bdr);
+    overflow: hidden;
+  }
+  .slideshow-modal .modal-stage img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: contain;
+    padding: 4vh 4vw;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity .35s ease;
+    filter: saturate(var(--img-sat)) contrast(var(--img-contrast)) brightness(var(--img-bright));
+  }
+  .slideshow-modal .modal-stage img.active { opacity: 1; }
+  .slideshow-modal .modal-bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 14px 4px 0;
+    color: var(--paper);
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  .slideshow-modal .modal-bar .left { text-align: left; }
+  .slideshow-modal .modal-bar .center { text-align: center; }
+  .slideshow-modal .modal-bar .right { text-align: right; display: flex; gap: 10px; justify-content: flex-end; }
+  .slideshow-modal .modal-bar button {
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid color-mix(in oklab, var(--paper) 40%, transparent);
+    border-radius: var(--bdr);
+    padding: 6px 12px;
+    font-family: inherit; font-size: 11px; letter-spacing: 0.06em;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .slideshow-modal .modal-bar button:hover {
+    background: color-mix(in oklab, var(--paper) 15%, transparent);
+  }
+  .slideshow-modal .modal-stage .nav-zone {
+    position: absolute; top: 0; bottom: 0; width: 30%;
+    cursor: pointer; z-index: 2;
+  }
+  .slideshow-modal .modal-stage .nav-zone.prev { left: 0; cursor: w-resize; }
+  .slideshow-modal .modal-stage .nav-zone.next { right: 0; cursor: e-resize; }
+  body.modal-open { overflow: hidden; }
+  .slideshow .frame {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity .6s ease;
+    pointer-events: none;
+  }
+  .slideshow .frame.active { opacity: 1; pointer-events: auto; }
+  .slideshow .frame img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    padding: 24px;
+    filter: saturate(var(--img-sat)) contrast(var(--img-contrast)) brightness(var(--img-bright));
+    transition: filter .4s ease;
+  }
+  /* ── Image treatment layers ────────────────────────────────
+     Two overlays sit on .frame: ::before = dot/line screen,
+     ::after = paper-color tint. Style is toggled via the
+     [data-img-style] attr on .slideshow. */
+  .slideshow .frame::after,
+  .slideshow .frame::before {
+    content: "";
+    position: absolute;
+    inset: 24px;
+    pointer-events: none;
+    transition: opacity .4s ease, background-image .4s ease;
+  }
+  .slideshow .frame::after {
+    background: var(--paper);
+    mix-blend-mode: color;
+    opacity: var(--img-tint);
+  }
+  .slideshow .frame::before {
+    opacity: 0; /* off unless a screen mode is selected */
+    mix-blend-mode: multiply;
+  }
 
-        .slideshow {
-            position: relative;
-            width: 100%;
-            height: 70vh;
-        }
+  /* ── Image treatment modes ─────────────────────────────────
+     Goal: abstract the photos into the page's paper-ink
+     language while keeping the subject readable.
+  ────────────────────────────────────────────────────────── */
 
-        .slideshow img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
+  /* Defaults already applied via .frame img + ::after above.
+     NEWSPRINT is the base state: desaturate + paper tint. */
+  .slideshow[data-img-style="newsprint"] .frame::before { opacity: 0; }
+  .slideshow[data-img-style="newsprint"] .frame img {
+    -webkit-mask-image: none; mask-image: none;
+  }
 
-        .slideshow img.active {
-            opacity: 1;
-        }
+  /* Mode: TONE — warm monochrome. Image goes fully grayscale,
+     then multiplies with paper so highlights carry paper's warmth
+     and shadows stay inky. Feels like a print on toned paper. */
+  .slideshow[data-img-style="tone"] .frame img {
+    filter: grayscale(1) contrast(calc(1.1 * var(--img-contrast))) brightness(calc(1.02 * var(--img-bright)));
+    -webkit-mask-image: none; mask-image: none;
+  }
+  .slideshow[data-img-style="tone"] .frame::after {
+    background: var(--paper);
+    mix-blend-mode: multiply;
+    opacity: 0.9;
+  }
+  .slideshow[data-img-style="tone"] .frame::before { opacity: 0; }
 
-        .slideshow {
-            cursor: pointer;
-        }
+  /* Mode: GRAIN — photocopy / risograph feel. Image stays
+     recognizable, but an SVG turbulence grain + paper-color
+     overlay breaks it up so it sits INTO the paper. Subject
+     survives because luminance is preserved. */
+  .slideshow[data-img-style="grain"] .frame img {
+    filter: grayscale(1) contrast(calc(1.25 * var(--img-contrast))) brightness(calc(1.04 * var(--img-bright)));
+    -webkit-mask-image: none; mask-image: none;
+  }
+  .slideshow[data-img-style="grain"] .frame::before {
+    opacity: 0.85;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 1.1'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: calc(var(--halftone-size, 5px) * 30) calc(var(--halftone-size, 5px) * 30);
+    mix-blend-mode: multiply;
+  }
+  .slideshow[data-img-style="grain"] .frame::after {
+    opacity: calc(var(--img-tint) * 0.7);
+  }
 
-        /* Project Grid */
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 40px;
-            margin-top: 40px;
-        }
+  /* Mode: HALFTONE — ink-dot mask on image. Best at small grid
+     sizes (3–5px) for a real newsprint look. Keep subject by
+     boosting brightness slightly. */
+  .slideshow[data-img-style="halftone"] .frame img {
+    filter: grayscale(1) contrast(calc(1.15 * var(--img-contrast))) brightness(calc(1.08 * var(--img-bright)));
+    -webkit-mask-image: radial-gradient(circle, #000 40%, transparent 44%);
+            mask-image: radial-gradient(circle, #000 40%, transparent 44%);
+    -webkit-mask-size: var(--halftone-size, 5px) var(--halftone-size, 5px);
+            mask-size: var(--halftone-size, 5px) var(--halftone-size, 5px);
+    -webkit-mask-repeat: repeat;
+            mask-repeat: repeat;
+  }
+  .slideshow[data-img-style="halftone"] .frame::after {
+    opacity: calc(var(--img-tint) * 0.4);
+  }
+  .slideshow[data-img-style="halftone"] .frame::before { opacity: 0; }
 
-        .project-item {
-            position: relative;
-            overflow: hidden;
-        }
+  /* Mode: PRINT — true duotone via SVG filter. Image luminance is
+     remapped so highlights carry paper hue and shadows become ink —
+     subject stays fully legible, fully integrated in palette. */
+  .slideshow[data-img-style="print"] .frame img {
+    filter: url(#duotone-filter) contrast(var(--img-contrast)) brightness(var(--img-bright));
+    -webkit-mask-image: none; mask-image: none;
+  }
+  .slideshow[data-img-style="print"] .frame::before,
+  .slideshow[data-img-style="print"] .frame::after { opacity: 0; }
 
-        .project-item a {
-            display: block;
-            text-decoration: none;
-            color: var(--text);
-        }
+  /* Mode: RAW — pure image. */
+  .slideshow[data-img-style="raw"] .frame img {
+    filter: none;
+    -webkit-mask-image: none; mask-image: none;
+  }
+  .slideshow[data-img-style="raw"] .frame::before,
+  .slideshow[data-img-style="raw"] .frame::after { opacity: 0; }
 
-        .project-image {
-            width: 100%;
-            aspect-ratio: 4/3;
-            background: #f5f5f5;
-            overflow: hidden;
-            margin-bottom: 10px;
-            transition: opacity 0.3s;
-        }
+  /* Hide overlays when frame is showing the placeholder (no image). */
+  .slideshow .frame:has(.ph.show)::after,
+  .slideshow .frame:has(img.broken)::after,
+  .slideshow .frame:has(.ph.show)::before,
+  .slideshow .frame:has(img.broken)::before { opacity: 0 !important; }
+  /* Placeholder (shown when image 404s — keeps composition alive) */
+  .slideshow .frame .ph {
+    position: absolute;
+    inset: 24px;
+    background-image:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 10px,
+        var(--ink-15) 10px 11px
+      );
+    border: var(--bdw) var(--bds) var(--ink-30); border-radius: var(--bdr);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-50);
+  }
+  .slideshow .frame img.broken + .ph,
+  .slideshow .frame .ph.show { display: flex; }
+  .slideshow .frame .ph { display: none; }
 
-        .project-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+  .slide-hud {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0;
+    padding: 10px 14px 12px;
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: linear-gradient(to top, var(--paper), color-mix(in oklab, var(--paper) 70%, transparent));
+    border-top: var(--bdw) var(--bds) var(--ink-30);
+    align-items: center;
+  }
+  .slide-hud .idx { color: var(--ink-50); }
+  .slide-hud .title { justify-self: center; text-align: center; }
+  .slide-hud .title .main { color: var(--ink); }
+  .slide-hud .title .year { color: var(--ink-50); margin-left: 10px; }
+  .slide-hud .ctrl {
+    display: flex; gap: 4px; justify-self: end;
+  }
+  .slide-hud .ctrl button {
+    font: inherit;
+    color: var(--ink);
+    background: transparent;
+    border: var(--bdw) var(--bds) var(--ink-30); border-radius: var(--bdr);
+    padding: 3px 8px;
+    cursor: pointer;
+    text-transform: inherit;
+    letter-spacing: inherit;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .slide-hud .ctrl button:hover {
+    background: var(--ink); color: var(--paper);
+    border-color: var(--ink); border-style: solid;
+  }
 
-        .project-item:hover .project-image {
-            opacity: 0.7;
-        }
+  .slide-progress {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    display: flex;
+    gap: 2px;
+    padding: 6px;
+  }
+  .slide-progress span {
+    flex: 1;
+    height: 2px;
+    background: var(--ink-15);
+  }
+  .slide-progress span.done { background: var(--ink); }
+  .slide-progress span.cur { background: var(--ink); }
 
-        .project-title {
-            font-size: 14px;
-            font-weight: 300;
-        }
+  .slideshow .nav-zone {
+    position: absolute;
+    top: 18px; bottom: 56px;
+    width: 40%;
+    cursor: pointer;
+  }
+  .slideshow .nav-zone.prev { left: 0; cursor: w-resize; }
+  .slideshow .nav-zone.next { right: 0; cursor: e-resize; }
 
-        /* About Section */
-        .about-section {
-            max-width: 800px;
-            margin: 60px 0;
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-        }
+  /* ──────────────────────────────────────────────────────────
+     About — two-column; real typographic hierarchy
+  ────────────────────────────────────────────────────────── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 120px 1fr 1fr;
+    gap: 40px;
+  }
+  .about-grid .col-label {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-50);
+    padding: 4px 0;
+    display: inline-block;
+    white-space: nowrap;
+    align-self: start;
+  }
+  .about-lede {
+    font-size: clamp(22px, 2.2vw, 30px);
+    line-height: 1.3;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+  .about-lede em { font-style: italic; color: var(--ink-50); }
+  .about-body p { margin-bottom: 14px; text-wrap: pretty; }
+  .about-body p:last-child { margin-bottom: 0; }
 
-        .about-section h3 {
-            font-size: 14px;
-            font-weight: 400;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
+  /* ──────────────────────────────────────────────────────────
+     Services — two-column list (discipline · tools/context)
+  ────────────────────────────────────────────────────────── */
+  .services {
+    border-top: 1px solid var(--rule);
+  }
+  .services .row {
+    display: grid;
+    grid-template-columns: 120px 1fr 1.3fr 80px;
+    gap: 20px;
+    align-items: baseline;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  .services .row:last-child { border-bottom: 1px solid var(--rule); }
+  .services .row .num {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink-50);
+  }
+  .services .row .what {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .services .row .tools {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .services .row .tools span { color: var(--ink-50); }
+  .services .row .dot {
+    justify-self: end;
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--ink-50);
+  }
 
-        .about-text {
-            font-size: 14px;
-            font-weight: 300;
-            line-height: 1.8;
-            margin-bottom: 20px;
-        }
+  /* ──────────────────────────────────────────────────────────
+     Contact — quietly expanded (location + links)
+  ────────────────────────────────────────────────────────── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 120px repeat(3, 1fr);
+    gap: 40px;
+  }
+  .contact-grid .col-label {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-50);
+    padding: 4px 0;
+    display: inline-block;
+    white-space: nowrap;
+    align-self: start;
+  }
+  .contact-card {
+    border: var(--bdw) var(--bds) var(--ink-30); border-radius: var(--bdr);
+    padding: 14px 16px;
+  }
+  .contact-card .k {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-50);
+    margin-bottom: 4px;
+  }
+  .contact-card .v {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+    line-height: 1.45;
+  }
+  .contact-card a {
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 1px;
+  }
+  .contact-card a:hover { border-color: var(--ink-50); color: var(--ink-50); }
 
-        /* Contact Section */
-        .contact-section {
-            max-width: 800px;
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-        }
+  /* Experience timeline */
+  .experience-grid {
+    border-top: 1px solid var(--rule);
+    margin-top: 8px;
+  }
+  .exp-row {
+    display: grid;
+    grid-template-columns: 140px 1.2fr 1.4fr;
+    gap: 24px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--hair);
+    align-items: baseline;
+  }
+  .exp-row:last-child { border-bottom: 1px solid var(--rule); }
+  .exp-row .yr {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink-50);
+    letter-spacing: 0.03em;
+  }
+  .exp-row .role {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .exp-row .org {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+  .exp-foot {
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding-top: 20px;
+    border-top: var(--bdw) var(--bds) var(--ink-30);
+  }
+  .exp-foot .mono { color: var(--ink-50); font-size: 11px; }
+  .exp-cv {
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: var(--bdw) var(--bds) var(--ink-30); border-radius: var(--bdr);
+    padding: 6px 12px;
+    white-space: nowrap;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .exp-cv:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); border-style: solid; }
+  @media (max-width: 900px) {
+    .exp-row { grid-template-columns: 1fr; gap: 4px; padding: 16px 0; }
+    .exp-foot { flex-direction: column; align-items: flex-start; }
+  }
 
-        .contact-section h3 {
-            font-size: 14px;
-            font-weight: 400;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
+  /* ──────────────────────────────────────────────────────────
+     Footer / colophon
+  ────────────────────────────────────────────────────────── */
+  footer {
+    padding: 24px var(--gutter);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-50);
+  }
+  footer .r { justify-self: end; }
+  footer .swatch {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    vertical-align: middle;
+    margin-left: 6px;
+  }
 
-        .contact-info {
-            font-size: 14px;
-            font-weight: 300;
-            line-height: 2;
-        }
-
-        .contact-info a {
-            color: var(--text);
-            text-decoration: none;
-            border-bottom: 1px solid var(--text);
-            transition: opacity 0.2s;
-        }
-
-        .contact-info a:hover {
-            opacity: 0.5;
-        }
-
-        /* Services List */
-        .services-list {
-            list-style: none;
-            margin: 40px 0;
-        }
-
-        .services-list li {
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
-            font-weight: 300;
-        }
-
-        .services-list li:first-child {
-            border-top: 1px solid var(--border);
-        }
-
-        /* Footer */
-        footer {
-            padding: 40px 30px;
-            border-top: 1px solid var(--border);
-            font-size: 12px;
-            font-weight: 300;
-            color: #666;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            header {
-                padding: 15px 20px;
-            }
-
-            .header-content {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .header-left h1 {
-                font-size: 16px;
-            }
-
-            .header-left h2 {
-                font-size: 12px;
-            }
-
-            .header-right {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            main {
-                padding: 0 20px 40px;
-                margin-top: 110px;
-            }
-
-            .hero {
-                min-height: auto;
-                padding: 20px 0;
-            }
-
-            .slideshow {
-                height: 40vh;
-            }
-
-            .about-section {
-                margin: 30px 0;
-                padding: 30px 0;
-            }
-
-            .about-text {
-                font-size: 13px;
-            }
-
-            .services-list li {
-                padding: 15px 0;
-                font-size: 13px;
-            }
-
-            .project-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .clock {
-                display: none;
-            }
-
-            footer {
-                padding: 30px 20px;
-            }
-        }
-
-        /* Placeholder styles for demo */
-        .placeholder-text {
-            color: #999;
-            font-style: italic;
-        }
-    </style>
+  /* ──────────────────────────────────────────────────────────
+     Mobile
+  ────────────────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    :root { --gutter: 20px; }
+    .topbar-row {
+      grid-template-columns: 1fr auto;
+      row-gap: 8px;
+    }
+    .topbar-row .field:nth-child(3),
+    .topbar-row .field:nth-child(5),
+    .topbar-row .topbar-dots { display: none; }
+    .topbar nav { grid-column: 1 / -1; justify-self: start; flex-wrap: wrap; }
+    .hero { grid-template-columns: 1fr; }
+    .meta-stack { flex-direction: row; flex-wrap: wrap; }
+    .meta-card { flex: 1 1 40%; }
+    .block-header { grid-template-columns: 1fr; gap: 12px; }
+    .about-grid { grid-template-columns: 1fr; gap: 20px; }
+    .about-lede { font-size: 20px; }
+    .services .row {
+      grid-template-columns: auto 1fr;
+      gap: 6px 16px;
+    }
+    .services .row .num { grid-row: 1 / 3; }
+    .services .row .tools { grid-column: 2; }
+    .services .row .dot { display: none; }
+    .contact-grid { grid-template-columns: 1fr 1fr; }
+    .slideshow { aspect-ratio: 4 / 3; }
+    footer { grid-template-columns: 1fr; }
+    footer .r { justify-self: start; }
+  }
+</style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="header-content">
-            <div class="header-left">
-                <h1>Clemens Neu.</h1>
-                <h2>Industrial Design & Product Development</h2>
-            </div>
-            <div class="header-right">
-                <span style="font-size:14px;font-weight:300;">Work in progress</span>
-                <div class="clock" id="clock">00:00:00</div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main>
-        <!-- Hero Slideshow -->
-        <section class="hero">
-            <div class="slideshow" id="slideshow">
-                <img src="Bilder/0.gif" alt="Clemens Neureiter" class="active">
-                <img src="Bilder/0.1.jpg" alt="Clemens Neureiter">
-                <img src="Bilder/1.jpg" alt="Clemens Neureiter">
-                <img src="Bilder/2.jpg" alt="Clemens Neureiter">
-                <img src="Bilder/2.2.JPG" alt="Clemens Neureiter">
-                <img src="Bilder/3.jpg" alt="Clemens Neureiter">
-                <img src="Bilder/4.jpg" alt="Clemens Neureiter">
-                <img src="Bilder/6.JPG" alt="Clemens Neureiter">
-                <img src="Bilder/7.jpg" alt="Clemens Neureiter">
-                <img src="Bilder/15.jpg" alt="Clemens Neureiter">
-                <img src="Bilder/33.jpg" alt="Clemens Neureiter">
-                <img src="Bilder/lighttest4.jpg" alt="Clemens Neureiter">
-                <img src="Bilder/MindFactory.jpg" alt="Clemens Neureiter">
-                <img src="Bilder/scene basic2.jpg" alt="Clemens Neureiter">
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="about-section">
-            <h3>About</h3>
-            <p class="about-text">
-                Industrial designer and product developer working at the intersection of design, engineering and craft. With a background in boatbuilding and carpentry, studied at UFG Linz, ECAL Lausanne and HKDI Hong Kong.
-            </p>
-            <p class="about-text">
-                I guide products holistically – from initial idea through construction and prototyping to production readiness. Combining design ambition with a deep understanding of materials, manufacturing and digital tools.
-            </p>
-            <p class="about-text">
-                Interdisciplinary, pragmatic and solution-oriented – whether collaborating with companies, engineers or working hands-on at the prototype in the workshop.
-            </p>
-
-            <h3 style="margin-top: 40px;">Services</h3>
-            <ul class="services-list">
-                <li>Industrial Design & Product Design</li>
-                <li>Construction & Prototyping</li>
-                <li>CAD/CAM & Digital Manufacturing</li>
-                <li>Product Development & Production Support</li>
-                <li>Software Development</li>
-                <li>Consulting & Concept Development</li>
-            </ul>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="contact-section">
-            <h3>Contact</h3>
-            <div class="contact-info">
-                <p>
-                    E-Mail: <a href="mailto:hello@clemens-neu.com">hello@clemens-neu.com</a>
-                </p>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 Clemens Neureiter. All rights reserved.</p>
-    </footer>
-
-    <script>
-        // Clock function
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
-        }
-
-        // Update clock every second
-        setInterval(updateClock, 1000);
-        updateClock(); // Initial call
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- True duotone: luminance mapped from paper (highlights) to ink (shadows).
+         Values are the PAPER default (#faf7f2 → 0.98 0.97 0.95) and INK (#0e0e0c → 0.055). -->
+    <filter id="duotone-filter" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="
+        0.299 0.587 0.114 0 0
+        0.299 0.587 0.114 0 0
+        0.299 0.587 0.114 0 0
+        0     0     0     1 0"/>
+      <feComponentTransfer>
+        <feFuncR tableValues="0.055 0.98"/>
+        <feFuncG tableValues="0.055 0.97"/>
+        <feFuncB tableValues="0.047 0.95"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+</svg>
 
 
-        // Slideshow
-        var slideIndex = 0;
-        var slides = document.querySelectorAll('#slideshow img');
+<!-- ════════════════════════════════════════════════════════════
+     SCHEMA BAR  ·  same DOC/REV/SET/SHEET idiom as the CV
+════════════════════════════════════════════════════════════ -->
+<header class="topbar" role="banner">
+  <div class="topbar-row">
+    <div class="field"><span class="k">DOC:</span><span class="v">CN · STUDIO</span></div>
+    <span class="topbar-dots" aria-hidden="true"></span>
+    <button type="button" class="field field-btn" id="paper-cycle" aria-label="Cycle paper color"><span class="k">PAPER:</span><span class="v" id="paper-name">CREAM</span><span class="arrow" aria-hidden="true">↻</span></button>
+    <span class="topbar-dots" aria-hidden="true"></span>
+    <div class="field"><span class="k" id="tz-label">ZRH</span><span class="v" id="clock">00:00</span></div>
+    <nav aria-label="Primary">
+      <a href="#work" data-nav>Work</a>
+      <a href="#about" data-nav>About</a>
+      <a href="#services" data-nav>Services</a>
+      <a href="#contact" data-nav>Contact</a>
+      <a href="CV_Clemens_Neureiter.html" download="CV_Clemens_Neureiter.html" data-cv-download aria-label="Download CV as HTML">CV ↓</a>
+    </nav>
+  </div>
+</header>
 
-        document.getElementById('slideshow').addEventListener('click', function() {
-            slides[slideIndex].classList.remove('active');
-            slideIndex = (slideIndex + 1) % slides.length;
-            slides[slideIndex].classList.add('active');
-        });
+<!-- ════════════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════════ -->
+<section class="hero" aria-labelledby="name">
+  <div>
+    <h1 class="hero-name" id="name">Clemens<br>Neureiter.</h1>
+    <div class="hero-tag">Industrial&nbsp;design&nbsp;&amp;&nbsp;product&nbsp;development</div>
+  </div>
+  <aside class="meta-stack" aria-label="Bio meta">
+    <div class="meta-card"><span class="k">Location</span><span class="v">Zurich, CH</span></div>
+    <div class="meta-card"><span class="k">Practice</span><span class="v">Design · Engineering · Craft</span></div>
+    <div class="meta-card"><span class="k">Status</span><span class="v">Available 2026 —<br>selected collaborations</span></div>
+    <div class="meta-card"><span class="k">Languages</span><span class="v">DE · EN</span></div>
+  </aside>
+</section>
 
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    window.scrollTo({
-                        top: target.offsetTop - 100,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    </script>
+<!-- ════════════════════════════════════════════════════════════
+     A  ·  WORK  —  slideshow with metadata
+════════════════════════════════════════════════════════════ -->
+<section class="block" id="work" aria-label="Selected work">
+  <div class="block-header">
+    <span class="block-letter">A — WORK</span>
+    <h2 class="block-title">Selected projects</h2>
+  </div>
+
+  <div class="slideshow" data-img-style="newsprint" id="slideshow" tabindex="0" aria-label="Project slideshow. Use arrow keys or the previous and next buttons to navigate.">
+    <div class="slide-progress" id="slide-progress" aria-hidden="true"></div>
+    <div class="nav-zone prev" data-dir="-1" aria-hidden="true"></div>
+    <div class="nav-zone next" data-dir="1"  aria-hidden="true"></div>
+
+    <!-- Frames populated from JS data -->
+    <div class="slide-hud" aria-hidden="true">
+      <span class="idx" id="slide-idx">01 / 14</span>
+      <span class="title"><span class="main" id="slide-title">Project</span><span class="year" id="slide-year">—</span></span>
+      <span class="ctrl">
+        <button type="button" id="btn-prev" aria-label="Previous slide">← prev</button>
+        <button type="button" id="btn-play" aria-label="Toggle autoplay">⏵ play</button>
+        <button type="button" id="btn-next" aria-label="Next slide">next →</button>
+      </span>
+    </div>
+    <div class="expand-hint">CLICK TO EXPAND ⤢</div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     B  ·  ABOUT
+════════════════════════════════════════════════════════════ -->
+<section class="block" id="about" aria-labelledby="about-title">
+  <div class="block-header">
+    <span class="block-letter">B — ABOUT</span>
+    <h2 class="block-title" id="about-title">Generalist by nature, <em>designing and building across physical and digital.</em></h2>
+  </div>
+
+  <div class="about-grid">
+    <span class="col-label">— PROFILE</span>
+    <p class="about-lede">
+      Fifteen years between the workbench and the CAD screen — <em>boats, furniture, medical devices, consumer goods, food.</em> Trained as a chef and boatbuilder, studied in Linz and at ECAL.
+    </p>
+    <div class="about-body">
+      <p>Experience spans renowned international design studios and a leadership role in a manufacturing company — overseeing planning and product development from sketch to series.</p>
+      <p>Work sits at the intersection of <em>design, engineering and craft</em>: products guided from initial idea through construction and prototyping to production readiness, combining design ambition with a deep understanding of materials, manufacturing and digital tools.</p>
+      <p>Whether collaborating with engineers or working hands-on at the prototype in the workshop — a pragmatic, interdisciplinary mindset, always curious to explore and evolve.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     C  ·  SERVICES  —  two columns, now with tools/context
+════════════════════════════════════════════════════════════ -->
+<section class="block" id="services" aria-labelledby="svc-title">
+  <div class="block-header">
+    <span class="block-letter">C — SERVICES</span>
+    <h2 class="block-title" id="svc-title">How I work</h2>
+  </div>
+
+  <div class="services">
+    <div class="row">
+      <span class="num">01</span>
+      <span class="what">Industrial & product design</span>
+      <span class="tools"><span>—</span> Concept, sketch, form, mock-up, class-A surfacing</span>
+      <span class="dot">●</span>
+    </div>
+    <div class="row">
+      <span class="num">02</span>
+      <span class="what">Construction & prototyping</span>
+      <span class="tools"><span>—</span> Workshop, wood, metal, composites, electronics</span>
+      <span class="dot">●</span>
+    </div>
+    <div class="row">
+      <span class="num">03</span>
+      <span class="what">CAD/CAM & digital manufacturing</span>
+      <span class="tools"><span>—</span> Rhino, Fusion, SolidWorks, CNC, 3D&nbsp;print</span>
+      <span class="dot">●</span>
+    </div>
+    <div class="row">
+      <span class="num">04</span>
+      <span class="what">Product development & production</span>
+      <span class="tools"><span>—</span> Planning, scheduling, ERP, shop-floor liaison</span>
+      <span class="dot">●</span>
+    </div>
+    <div class="row">
+      <span class="num">05</span>
+      <span class="what">Software & electronics</span>
+      <span class="tools"><span>—</span> Arduino, Raspberry&nbsp;Pi, sensors, actuators</span>
+      <span class="dot">●</span>
+    </div>
+    <div class="row">
+      <span class="num">06</span>
+      <span class="what">Consulting & concept</span>
+      <span class="tools"><span>—</span> Briefs, feasibility, interdisciplinary reviews</span>
+      <span class="dot">●</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     D  ·  CONTACT
+════════════════════════════════════════════════════════════ -->
+<section class="block" id="contact" aria-labelledby="contact-title">
+  <div class="block-header">
+    <span class="block-letter">D — CONTACT</span>
+    <h2 class="block-title" id="contact-title">Let's make something.</h2>
+  </div>
+
+  <div class="contact-grid">
+    <span class="col-label">— CHANNELS</span>
+
+    <div class="contact-card">
+      <div class="k">Email</div>
+      <div class="v"><a href="mailto:hello@clemens-neu.com">hello@clemens-neu.com</a></div>
+    </div>
+
+    <div class="contact-card">
+      <div class="k">Studio &amp; Workshop</div>
+      <div class="v">Winterthur · Zurich<br>Switzerland</div>
+    </div>
+
+    <div class="contact-card">
+      <div class="k">Documents</div>
+      <div class="v">
+        <a href="CV_Clemens_Neureiter.html" download="CV_Clemens_Neureiter.html" data-cv-download>CV ↓</a><br>
+        <a href="mailto:hello@clemens-neu.com?subject=Project%20inquiry">Start a brief →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     COLOPHON
+════════════════════════════════════════════════════════════ -->
+<footer>
+  <div>© 2026 Clemens Neureiter · All rights reserved · <span class="swatch" id="swatch" aria-hidden="true"></span></div>
+  <div class="r">Set in Monument Grotesk · Portfolio <span id="rev-id">01</span> · WIP</div>
+</footer>
+
+<script>
+(function () {
+  /* ──────────────────────────────────────────────────────────
+     1. Random paper color on each visit.
+        Keeps the CV's palette. Black paper kept out of rotation
+        (legibility with black ink) — but makes a cameo once in
+        a while if you're curious; here we simply exclude it.
+  ────────────────────────────────────────────────────────── */
+  const PAPERS = [
+    { name: 'CREAM',    hex: '#faf7f2' },
+    { name: 'BONE',     hex: '#f2efe8' },
+    { name: 'SKY',      hex: '#dff1ff' },
+    { name: 'ROSE',     hex: '#f3e4de' },
+    { name: 'MINT',     hex: '#e4ede1' },
+    { name: 'JAUNE',    hex: '#f5ecc5' },
+    { name: 'LILAC',    hex: '#ede1f0' },
+  ];
+  let paperIdx = Math.floor(Math.random() * PAPERS.length);
+  function applyPaper(i) {
+    const p = PAPERS[i];
+    document.documentElement.style.setProperty('--paper', p.hex);
+    document.getElementById('paper-name').textContent = p.name;
+    document.getElementById('swatch').style.background = p.hex;
+  }
+  applyPaper(paperIdx);
+  document.getElementById('paper-cycle').addEventListener('click', () => {
+    paperIdx = (paperIdx + 1) % PAPERS.length;
+    applyPaper(paperIdx);
+  });
+
+  /* ──────────────────────────────────────────────────────────
+     2. Localized clock — ZRH / CET, updates live.
+        (Kept simple: Europe/Zurich is where the studio is.)
+  ────────────────────────────────────────────────────────── */
+  const clockEl = document.getElementById('clock');
+  function tick() {
+    const d = new Date();
+    const parts = new Intl.DateTimeFormat('de-CH', {
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour12: false, timeZone: 'Europe/Zurich'
+    }).formatToParts(d);
+    const h = parts.find(p => p.type === 'hour').value;
+    const m = parts.find(p => p.type === 'minute').value;
+    const s = parts.find(p => p.type === 'second').value;
+    clockEl.textContent = `${h}:${m}:${s}`;
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ──────────────────────────────────────────────────────────
+     3. Active-nav highlight based on scroll position.
+  ────────────────────────────────────────────────────────── */
+  const navLinks = document.querySelectorAll('[data-nav]');
+  const sectionIds = ['work', 'about', 'services', 'contact'];
+  const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+  function onScroll() {
+    const y = window.scrollY + 140;
+    let current = sections[0]?.id;
+    for (const s of sections) { if (s.offsetTop <= y) current = s.id; }
+    navLinks.forEach(a => {
+      const target = a.getAttribute('href').slice(1);
+      a.classList.toggle('active', target === current);
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ──────────────────────────────────────────────────────────
+     4. Smooth-scroll that respects sticky header.
+  ────────────────────────────────────────────────────────── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      e.preventDefault();
+      window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+
+  /* ──────────────────────────────────────────────────────────
+     5. Slideshow with metadata, autoplay, keyboard, progress.
+        SOURCES: each frame now knows what it is. If the image
+        404s, we show a dashed placeholder with the project
+        name — so the layout never collapses and the meta still
+        reads.
+  ────────────────────────────────────────────────────────── */
+  const SLIDES = [
+    { src: 'Bilder/0.gif',            title: 'On Running — Sole Study',  year: '2026' },
+    { src: 'Bilder/0.1.jpg',          title: 'Studio Shot',              year: '2025' },
+    { src: 'Bilder/1.jpg',            title: 'Orthosis — NeuroKiz',      year: '2024' },
+    { src: 'Bilder/2.jpg',            title: 'Furniture — Hürlemann AG', year: '2023' },
+    { src: 'Bilder/2.2.JPG',          title: 'Furniture — Detail',       year: '2023' },
+    { src: 'Bilder/3.jpg',            title: 'Brand — LOPAS GmbH',       year: '2022' },
+    { src: 'Bilder/4.jpg',            title: 'Reinvented Toilet — EOOS', year: '2019' },
+    { src: 'Bilder/6.JPG',            title: 'Concept — Zumtobel',       year: '2019' },
+    { src: 'Bilder/7.jpg',            title: 'Bartel & Holzer',          year: '2018' },
+    { src: 'Bilder/15.jpg',           title: 'Sunbeam Yachts',           year: '2015' },
+    { src: 'Bilder/33.jpg',           title: 'Ceramic Plate — Study',   year: '2013' },
+    { src: 'Bilder/lighttest4.jpg',   title: 'Light Prototype',          year: '—' },
+    { src: 'Bilder/MindFactory.jpg',  title: 'MindFactory',              year: '—' },
+    { src: 'Bilder/scene basic2.jpg', title: 'Scene Study',              year: '—' },
+  ];
+
+  const slideshow = document.getElementById('slideshow');
+  const progress  = document.getElementById('slide-progress');
+  const idxEl     = document.getElementById('slide-idx');
+  const titleEl   = document.getElementById('slide-title');
+  const yearEl    = document.getElementById('slide-year');
+  const btnPrev   = document.getElementById('btn-prev');
+  const btnNext   = document.getElementById('btn-next');
+  const btnPlay   = document.getElementById('btn-play');
+
+  // Build frames
+  const frames = SLIDES.map((s, i) => {
+    const frame = document.createElement('div');
+    frame.className = 'frame' + (i === 0 ? ' active' : '');
+    const img = document.createElement('img');
+    img.src = s.src;
+    img.alt = s.title;
+    img.loading = i === 0 ? 'eager' : 'lazy';
+    img.decoding = 'async';
+    const ph = document.createElement('div');
+    ph.className = 'ph';
+    ph.textContent = s.title;
+    img.addEventListener('error', () => {
+      img.style.display = 'none';
+      ph.classList.add('show');
+    });
+    frame.appendChild(img);
+    frame.appendChild(ph);
+    slideshow.insertBefore(frame, slideshow.querySelector('.slide-hud'));
+    return frame;
+  });
+
+  // Build progress dashes
+  SLIDES.forEach(() => {
+    const seg = document.createElement('span');
+    progress.appendChild(seg);
+  });
+
+  let cur = 0;
+  let playing = false;
+  let timer = null;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function render() {
+    frames.forEach((f, i) => f.classList.toggle('active', i === cur));
+    idxEl.textContent = `${pad(cur + 1)} / ${pad(SLIDES.length)}`;
+    titleEl.textContent = SLIDES[cur].title;
+    yearEl.textContent = SLIDES[cur].year;
+    progress.querySelectorAll('span').forEach((seg, i) => {
+      seg.classList.toggle('done', i < cur);
+      seg.classList.toggle('cur',  i === cur);
+    });
+  }
+
+  function go(dir) {
+    cur = (cur + dir + SLIDES.length) % SLIDES.length;
+    render();
+  }
+  function toSlide(i) { cur = i; render(); }
+
+  function startAuto() {
+    playing = true;
+    btnPlay.textContent = '⏸ pause';
+    clearInterval(timer);
+    timer = setInterval(() => go(1), 4200);
+  }
+  function stopAuto() {
+    playing = false;
+    btnPlay.textContent = '⏵ play';
+    clearInterval(timer);
+  }
+
+  btnPrev.addEventListener('click', (e) => { e.stopPropagation(); go(-1); stopAuto(); });
+  btnNext.addEventListener('click', (e) => { e.stopPropagation(); go(1);  stopAuto(); });
+  btnPlay.addEventListener('click', (e) => { e.stopPropagation(); playing ? stopAuto() : startAuto(); });
+
+  // Click zones — big, silent, left half = prev, right half = next.
+  slideshow.querySelectorAll('.nav-zone').forEach(z => {
+    z.addEventListener('click', () => { go(parseInt(z.dataset.dir, 10)); stopAuto(); });
+  });
+
+  // Keyboard
+  slideshow.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  { go(-1); stopAuto(); }
+    if (e.key === 'ArrowRight') { go(1);  stopAuto(); }
+    if (e.key === ' ')          { e.preventDefault(); playing ? stopAuto() : startAuto(); }
+  });
+
+  // Start autoplay once the user has looked at the hero a moment
+  render();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting && !playing) startAuto();
+      if (!en.isIntersecting && playing) stopAuto();
+    });
+  }, { threshold: 0.4 });
+  io.observe(slideshow);
+
+  /* Force-rename the CV download even when served cross-origin
+     (browsers ignore the `download` attribute otherwise). */
+  document.querySelectorAll('[data-cv-download]').forEach(a => {
+    a.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        const res = await fetch(a.getAttribute('href'));
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const tmp = document.createElement('a');
+        tmp.href = url;
+        tmp.download = 'CV_Clemens_Neureiter.html';
+        document.body.appendChild(tmp);
+        tmp.click();
+        tmp.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      } catch (err) {
+        window.location.href = a.getAttribute('href');
+      }
+    });
+  });
+
+  /* ──────────────────────────────────────────────────────────
+     6. Revision ID — tiny studio-ish touch for the footer.
+  ────────────────────────────────────────────────────────── */
+  const rev = (new Date().getFullYear() - 2026 + 1); // 01, 02, ...
+  document.getElementById('rev-id').textContent = String(Math.max(1, rev)).padStart(2, '0');
+})();
+</script>
+
+<!-- ════════════════════════════════════════════════════════════
+     TWEAKS PANEL — frame language (radius + line weight/style)
+     Only visible when the editor enables edit mode.
+═══════════════════════════════════════════════════════════════ -->
+<style>
+  #tweaks {
+    position: fixed; right: 16px; bottom: 16px; z-index: 9999;
+    width: 260px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    padding: 14px 14px 12px;
+    display: none;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  }
+  #tweaks.open { display: block; }
+  #tweaks h4 {
+    margin: 0 0 10px;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  #tweaks h4 .tag { color: var(--ink-50); font-weight: 400; }
+  #tweaks .row { margin: 10px 0; }
+  #tweaks .row > label {
+    display: block;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-50); margin-bottom: 6px;
+  }
+  #tweaks .row .val { color: var(--ink); float: right; }
+  #tweaks input[type="range"] {
+    width: 100%; accent-color: var(--ink);
+    margin: 0;
+  }
+  #tweaks .opts {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+  }
+  #tweaks .opts.opts-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  #tweaks .opts.opts-5 button { padding: 8px 2px; font-size: 9px; letter-spacing: 0.04em; }
+  #tweaks .opts button {
+    all: unset; cursor: pointer;
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    border: 1px solid var(--ink-30);
+    color: var(--ink);
+    background: transparent;
+    transition: background .12s, color .12s, border-color .12s;
+  }
+  #tweaks .opts button:hover { border-color: var(--ink); }
+  #tweaks .opts button.active {
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+  }
+  #tweaks .preview-line {
+    height: 0; margin-top: 8px;
+    border-top: var(--bdw) var(--bds) var(--ink);
+  }
+  #tweaks .reset {
+    all: unset; cursor: pointer;
+    display: block; margin-top: 12px; padding-top: 10px;
+    border-top: 1px solid var(--ink-15);
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-50);
+  }
+  #tweaks .reset:hover { color: var(--ink); }
+</style>
+<div id="tweaks" aria-hidden="true">
+  <h4>Tweaks <span class="tag">FRAMES</span></h4>
+
+  <div class="row">
+    <label>Corner radius <span class="val" id="t-radius-val">0px</span></label>
+    <input type="range" id="t-radius" min="0" max="24" step="1" value="0">
+  </div>
+
+  <div class="row">
+    <label>Line weight <span class="val" id="t-width-val">1px</span></label>
+    <input type="range" id="t-width" min="0" max="4" step="0.5" value="1">
+  </div>
+
+  <div class="row">
+    <label>Line style</label>
+    <div class="opts" id="t-style">
+      <button data-style="solid">solid</button>
+      <button data-style="dashed" class="active">dashed</button>
+      <button data-style="dotted">dotted</button>
+      <button data-style="double">double</button>
+    </div>
+    <div class="preview-line"></div>
+  </div>
+
+  <div class="row">
+    <label>Image tint <span class="val" id="t-tint-val">55%</span></label>
+    <input type="range" id="t-tint" min="0" max="100" step="1" value="55">
+  </div>
+
+  <div class="row">
+    <label>Image saturation <span class="val" id="t-sat-val">35%</span></label>
+    <input type="range" id="t-sat" min="0" max="100" step="1" value="35">
+  </div>
+
+  <div class="row">
+    <label>Image contrast <span class="val" id="t-contrast-val">105%</span></label>
+    <input type="range" id="t-contrast" min="50" max="200" step="5" value="105">
+  </div>
+
+  <div class="row">
+    <label>Image brightness <span class="val" id="t-bright-val">100%</span></label>
+    <input type="range" id="t-bright" min="50" max="150" step="5" value="100">
+  </div>
+
+  <div class="row">
+    <label>Image style</label>
+    <div class="opts opts-5" id="t-imgstyle">
+      <button data-imgstyle="raw">raw</button>
+      <button data-imgstyle="newsprint" class="active">news</button>
+      <button data-imgstyle="print">print</button>
+      <button data-imgstyle="grain">grain</button>
+      <button data-imgstyle="halftone">dots</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <label>Screen size <span class="val" id="t-screen-val">5px</span></label>
+    <input type="range" id="t-screen" min="2" max="14" step="1" value="5">
+  </div>
+
+  <button class="reset" id="t-reset">↺ Reset defaults</button>
+</div>
+<script>
+(() => {
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "bdr": 8,
+    "bdw": 1,
+    "bds": "dashed",
+    "imgTint": 100,
+    "imgSat": 48,
+    "imgStyle": "raw",
+    "screen": 3,
+    "imgContrast": 120,
+    "imgBright": 130
+  }/*EDITMODE-END*/;
+
+  const state = { ...TWEAK_DEFAULTS };
+  const root = document.documentElement;
+
+  function apply() {
+    root.style.setProperty('--bdr', state.bdr + 'px');
+    root.style.setProperty('--bdw', state.bdw + 'px');
+    root.style.setProperty('--bds', state.bds);
+    root.style.setProperty('--img-tint', (state.imgTint / 100).toFixed(2));
+    root.style.setProperty('--img-sat', (state.imgSat / 100).toFixed(2));
+    root.style.setProperty('--img-contrast', (state.imgContrast / 100).toFixed(2));
+    root.style.setProperty('--img-bright', (state.imgBright / 100).toFixed(2));
+    root.style.setProperty('--halftone-size', state.screen + 'px');
+    document.querySelector('.slideshow').setAttribute('data-img-style', state.imgStyle);
+    document.getElementById('t-radius').value = state.bdr;
+    document.getElementById('t-radius-val').textContent = state.bdr + 'px';
+    document.getElementById('t-width').value = state.bdw;
+    document.getElementById('t-width-val').textContent = state.bdw + 'px';
+    document.getElementById('t-tint').value = state.imgTint;
+    document.getElementById('t-tint-val').textContent = state.imgTint + '%';
+    document.getElementById('t-sat').value = state.imgSat;
+    document.getElementById('t-sat-val').textContent = state.imgSat + '%';
+    document.getElementById('t-screen').value = state.screen;
+    document.getElementById('t-screen-val').textContent = state.screen + 'px';
+    document.getElementById('t-contrast').value = state.imgContrast;
+    document.getElementById('t-contrast-val').textContent = state.imgContrast + '%';
+    document.getElementById('t-bright').value = state.imgBright;
+    document.getElementById('t-bright-val').textContent = state.imgBright + '%';
+    document.querySelectorAll('#t-style button').forEach(b => {
+      b.classList.toggle('active', b.dataset.style === state.bds);
+    });
+    document.querySelectorAll('#t-imgstyle button').forEach(b => {
+      b.classList.toggle('active', b.dataset.imgstyle === state.imgStyle);
+    });
+  }
+
+  function persist(patch) {
+    try {
+      window.parent.postMessage({type: '__edit_mode_set_keys', edits: patch}, '*');
+    } catch (e) {}
+  }
+
+  apply();
+
+  document.getElementById('t-radius').addEventListener('input', e => {
+    state.bdr = +e.target.value; apply(); persist({bdr: state.bdr});
+  });
+  document.getElementById('t-width').addEventListener('input', e => {
+    state.bdw = +e.target.value; apply(); persist({bdw: state.bdw});
+  });
+  document.querySelectorAll('#t-style button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.bds = btn.dataset.style; apply(); persist({bds: state.bds});
+    });
+  });
+  document.getElementById('t-tint').addEventListener('input', e => {
+    state.imgTint = +e.target.value; apply(); persist({imgTint: state.imgTint});
+  });
+  document.getElementById('t-sat').addEventListener('input', e => {
+    state.imgSat = +e.target.value; apply(); persist({imgSat: state.imgSat});
+  });
+  document.getElementById('t-screen').addEventListener('input', e => {
+    state.screen = +e.target.value; apply(); persist({screen: state.screen});
+  });
+  document.getElementById('t-contrast').addEventListener('input', e => {
+    state.imgContrast = +e.target.value; apply(); persist({imgContrast: state.imgContrast});
+  });
+  document.getElementById('t-bright').addEventListener('input', e => {
+    state.imgBright = +e.target.value; apply(); persist({imgBright: state.imgBright});
+  });
+  document.querySelectorAll('#t-imgstyle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.imgStyle = btn.dataset.imgstyle; apply(); persist({imgStyle: state.imgStyle});
+    });
+  });
+  document.getElementById('t-reset').addEventListener('click', () => {
+    const d = {bdr: 0, bdw: 1, bds: 'dashed', imgTint: 55, imgSat: 35, imgStyle: 'newsprint', screen: 5, imgContrast: 105, imgBright: 100};
+    Object.assign(state, d); apply(); persist(d);
+  });
+
+  // Edit-mode protocol — panel only visible when host toggles it on.
+  const panel = document.getElementById('tweaks');
+  window.addEventListener('message', (ev) => {
+    const d = ev.data || {};
+    if (d.type === '__activate_edit_mode') {
+      panel.classList.add('open');
+      panel.setAttribute('aria-hidden', 'false');
+    } else if (d.type === '__deactivate_edit_mode') {
+      panel.classList.remove('open');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+  });
+  try { window.parent.postMessage({type: '__edit_mode_available'}, '*'); } catch (e) {}
+})();
+</script>
+<div class="slideshow-modal" id="slideshow-modal" role="dialog" aria-modal="true" aria-label="Project slideshow expanded">
+  <div class="modal-stage" id="modal-stage">
+    <div class="nav-zone prev" data-mdir="-1"></div>
+    <div class="nav-zone next" data-mdir="1"></div>
+  </div>
+  <div class="modal-bar">
+    <span class="left" id="modal-idx">01 / 14</span>
+    <span class="center"><span id="modal-title">Project</span> <span style="opacity:.6" id="modal-year">—</span></span>
+    <span class="right">
+      <button type="button" id="modal-prev">← prev</button>
+      <button type="button" id="modal-next">next →</button>
+      <button type="button" id="modal-close">close ✕</button>
+    </span>
+  </div>
+</div>
 </body>
 </html>

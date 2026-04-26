@@ -1014,7 +1014,7 @@
     { name: 'JAUNE',    hex: '#f5ecc5' },
     { name: 'LILAC',    hex: '#ede1f0' },
   ];
-  let paperIdx = Math.floor(Math.random() * PAPERS.length);
+  let paperIdx = 0; // CREAM as default
   function applyPaper(i) {
     const p = PAPERS[i];
     document.documentElement.style.setProperty('--paper', p.hex);

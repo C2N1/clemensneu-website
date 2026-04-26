@@ -758,6 +758,46 @@
     footer { grid-template-columns: 1fr; }
     footer .r { justify-self: start; }
   }
+
+  /* CV modal */
+  .cv-modal {
+    position: fixed; inset: 0;
+    background: color-mix(in oklab, var(--ink) 92%, var(--paper) 0%);
+    display: none;
+    z-index: 1000;
+    padding: 5vh 5vw;
+    box-sizing: border-box;
+    animation: ssOpen .35s ease;
+  }
+  .cv-modal.open { display: flex; flex-direction: column; }
+  .cv-modal .cv-stage {
+    flex: 1; min-height: 0;
+    background: var(--paper);
+    border-radius: var(--bdr);
+    overflow: hidden;
+  }
+  .cv-modal .cv-stage iframe {
+    width: 100%; height: 100%; border: none;
+  }
+  .cv-modal .cv-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 14px 4px 0;
+  }
+  .cv-modal .cv-bar button {
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid color-mix(in oklab, var(--paper) 40%, transparent);
+    border-radius: var(--bdr);
+    padding: 6px 12px;
+    font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.06em;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .cv-modal .cv-bar button:hover {
+    background: color-mix(in oklab, var(--paper) 15%, transparent);
+  }
 </style>
 </head>
 <body>
@@ -796,7 +836,7 @@
       <a href="#about" data-nav>About</a>
       <a href="#services" data-nav>Services</a>
       <a href="#contact" data-nav>Contact</a>
-      <a href="CV_Clemens_Neureiter.html" download="CV_Clemens_Neureiter.html" data-cv-download aria-label="Download CV as HTML">CV ↓</a>
+      <a href="CV_Clemens_Neureiter.html" data-cv-open aria-label="View CV">CV</a>
     </nav>
   </div>
 </header>
@@ -941,7 +981,7 @@
     <div class="contact-card">
       <div class="k">Documents</div>
       <div class="v">
-        <a href="CV_Clemens_Neureiter.html" download="CV_Clemens_Neureiter.html" data-cv-download>CV ↓</a><br>
+        <a href="CV_Clemens_Neureiter.html" data-cv-open>CV</a><br>
         <a href="mailto:hello@clemens-neu.com?subject=Project%20inquiry">Start a brief →</a>
       </div>
     </div>
@@ -1158,26 +1198,29 @@
   }, { threshold: 0.4 });
   io.observe(slideshow);
 
-  /* Force-rename the CV download even when served cross-origin
-     (browsers ignore the `download` attribute otherwise). */
-  document.querySelectorAll('[data-cv-download]').forEach(a => {
-    a.addEventListener('click', async (e) => {
+  /* CV modal — open CV in a lightbox overlay */
+  const cvModal = document.getElementById('cv-modal');
+  const cvFrame = document.getElementById('cv-frame');
+  function openCV(href) {
+    cvFrame.src = href;
+    cvModal.classList.add('open');
+    document.body.classList.add('modal-open');
+  }
+  function closeCV() {
+    cvModal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    cvFrame.src = '';
+  }
+  document.querySelectorAll('[data-cv-open]').forEach(a => {
+    a.addEventListener('click', (e) => {
       e.preventDefault();
-      try {
-        const res = await fetch(a.getAttribute('href'));
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const tmp = document.createElement('a');
-        tmp.href = url;
-        tmp.download = 'CV_Clemens_Neureiter.html';
-        document.body.appendChild(tmp);
-        tmp.click();
-        tmp.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 1500);
-      } catch (err) {
-        window.location.href = a.getAttribute('href');
-      }
+      openCV(a.getAttribute('href'));
     });
+  });
+  document.getElementById('cv-modal-close').addEventListener('click', closeCV);
+  cvModal.addEventListener('click', (e) => { if (e.target === cvModal) closeCV(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && cvModal.classList.contains('open')) closeCV();
   });
 
   /* ──────────────────────────────────────────────────────────
@@ -1442,6 +1485,14 @@
       <button type="button" id="modal-next">next →</button>
       <button type="button" id="modal-close">close ✕</button>
     </span>
+  </div>
+</div>
+<div class="cv-modal" id="cv-modal" role="dialog" aria-modal="true" aria-label="CV">
+  <div class="cv-stage">
+    <iframe id="cv-frame" title="CV Clemens Neureiter"></iframe>
+  </div>
+  <div class="cv-bar">
+    <button type="button" id="cv-modal-close">close ✕</button>
   </div>
 </div>
 </body>

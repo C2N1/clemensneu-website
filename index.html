@@ -759,6 +759,47 @@
     footer .r { justify-self: start; }
   }
 
+  /* ──────────────────────────────────────────────────────────
+     Small phones (≤ 480px)
+  ────────────────────────────────────────────────────────── */
+  @media (max-width: 480px) {
+    :root { --gutter: 14px; }
+
+    .topbar { padding: 12px var(--gutter) 10px; }
+    .topbar-row { gap: 6px; font-size: 10px; }
+    .topbar-row .field:first-child { display: none; }
+    .topbar nav { gap: 4px; }
+    .topbar nav a { padding: 4px 7px; font-size: 10px; }
+
+    .hero { padding: 40px var(--gutter) 28px; gap: 24px; }
+    .hero-name { font-size: clamp(40px, 12vw, 56px); }
+    .hero-tag { font-size: 16px; }
+
+    .meta-stack { flex-direction: column; }
+    .meta-card { flex: 1 1 100%; }
+
+    section.block { padding: 48px var(--gutter) 56px; }
+    .block-title { font-size: clamp(22px, 6vw, 28px); }
+
+    .slideshow { aspect-ratio: 3 / 4; }
+    .slideshow .frame img { padding: 12px; }
+    .slideshow .frame::after,
+    .slideshow .frame::before { inset: 12px; }
+    .slide-progress { padding: 4px; }
+
+    .about-lede { font-size: 18px; }
+    .about-body { font-size: 15px; }
+
+    .services .row .what { font-size: 18px; }
+    .services .row .tools { font-size: 11px; }
+
+    .contact-grid { grid-template-columns: 1fr; gap: 16px; }
+
+    .exp-row .role { font-size: 18px; }
+
+    .cv-modal { padding: 2vh 2vw; }
+  }
+
   /* CV modal */
   .cv-modal {
     position: fixed; inset: 0;

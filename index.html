@@ -1199,30 +1199,6 @@
   }, { threshold: 0.4 });
   io.observe(slideshow);
 
-  /* CV modal — open CV in a lightbox overlay */
-  const cvModal = document.getElementById('cv-modal');
-  const cvFrame = document.getElementById('cv-frame');
-  function openCV(href) {
-    cvFrame.src = href;
-    cvModal.classList.add('open');
-    document.body.classList.add('modal-open');
-  }
-  function closeCV() {
-    cvModal.classList.remove('open');
-    document.body.classList.remove('modal-open');
-    cvFrame.src = '';
-  }
-  document.querySelectorAll('[data-cv-open]').forEach(a => {
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-      openCV(a.getAttribute('href'));
-    });
-  });
-  document.getElementById('cv-modal-close').addEventListener('click', closeCV);
-  cvModal.addEventListener('click', (e) => { if (e.target === cvModal) closeCV(); });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && cvModal.classList.contains('open')) closeCV();
-  });
 
   /* ──────────────────────────────────────────────────────────
      6. Revision ID — tiny studio-ish touch for the footer.
@@ -1496,5 +1472,32 @@
     <button type="button" id="cv-modal-close">close ✕</button>
   </div>
 </div>
+<script>
+(function() {
+  const cvModal = document.getElementById('cv-modal');
+  const cvFrame = document.getElementById('cv-frame');
+  function openCV(href) {
+    cvFrame.src = href;
+    cvModal.classList.add('open');
+    document.body.classList.add('modal-open');
+  }
+  function closeCV() {
+    cvModal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    cvFrame.src = '';
+  }
+  document.querySelectorAll('[data-cv-open]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      openCV(a.getAttribute('href'));
+    });
+  });
+  document.getElementById('cv-modal-close').addEventListener('click', closeCV);
+  cvModal.addEventListener('click', (e) => { if (e.target === cvModal) closeCV(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && cvModal.classList.contains('open')) closeCV();
+  });
+})();
+</script>
 </body>
 </html>

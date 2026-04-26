@@ -1475,6 +1475,11 @@
   const cvFrame = document.getElementById('cv-frame');
   function openCV(href) {
     cvFrame.src = href;
+    cvFrame.onload = () => {
+      const paper = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim();
+      cvFrame.contentDocument.documentElement.style.setProperty('--paper', paper);
+      cvFrame.contentDocument.body.style.background = paper;
+    };
     cvModal.classList.add('open');
     document.body.classList.add('modal-open');
   }

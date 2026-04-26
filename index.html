@@ -762,7 +762,7 @@
   /* CV modal */
   .cv-modal {
     position: fixed; inset: 0;
-    background: color-mix(in oklab, var(--ink) 92%, var(--paper) 0%);
+    background: var(--paper);
     display: none;
     z-index: 1000;
     padding: 5vh 5vw;
@@ -786,8 +786,8 @@
   }
   .cv-modal .cv-bar button {
     background: transparent;
-    color: var(--paper);
-    border: 1px solid color-mix(in oklab, var(--paper) 40%, transparent);
+    color: var(--ink);
+    border: var(--bdw) var(--bds) var(--ink-30);
     border-radius: var(--bdr);
     padding: 6px 12px;
     font-family: 'Monument Grotesk Mono', ui-monospace, monospace;
@@ -796,7 +796,8 @@
     text-transform: uppercase;
   }
   .cv-modal .cv-bar button:hover {
-    background: color-mix(in oklab, var(--paper) 15%, transparent);
+    background: var(--ink); color: var(--paper);
+    border-color: var(--ink); border-style: solid;
   }
 </style>
 </head>

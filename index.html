@@ -1380,8 +1380,8 @@
 (() => {
   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "bdr": 8,
-    "bdw": 1,
-    "bds": "dashed",
+    "bdw": 0,
+    "bds": "none",
     "imgTint": 100,
     "imgSat": 48,
     "imgStyle": "raw",
@@ -1465,7 +1465,7 @@
     });
   });
   document.getElementById('t-reset').addEventListener('click', () => {
-    const d = {bdr: 0, bdw: 1, bds: 'dashed', imgTint: 55, imgSat: 35, imgStyle: 'newsprint', screen: 5, imgContrast: 105, imgBright: 100};
+    const d = {bdr: 0, bdw: 0, bds: 'none', imgTint: 55, imgSat: 35, imgStyle: 'newsprint', screen: 5, imgContrast: 105, imgBright: 100};
     Object.assign(state, d); apply(); persist(d);
   });
 

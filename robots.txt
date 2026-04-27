@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /CV_Clemens_Neureiter.html
 
 Sitemap: https://clemens-neu.com/sitemap.xml
